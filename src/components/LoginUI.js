@@ -5,14 +5,14 @@ import { Icon, Button, Form, Grid, Header, Image, Message, Segment } from 'seman
 
 import FormInput from '../containers/Input';
 import LoginButton from '../containers/LoginButton';
-import { setUserEmail, setUserPassword, signUpWithEmailAndPassword } from '../actions/index';
+import { setUserEmail, setUserPassword, signUpWithEmailAndPassword, logInWithGoogle, logInWithEmailAndPassword } from '../actions/index';
 
 const mapStateToProps = (state) => ({
     authorizing: state.user.authorizing
 });
 
 class LoginUI extends Component {
-    state = { email: '', password: '' }
+    state = { email: '', password: '', email_login: '', password_login: '' }
     handleChange = (e, { name, value }) => this.setState({ [name]: value })
     handleSubmit = e => {
       const { email, password } = this.state
@@ -25,8 +25,19 @@ class LoginUI extends Component {
         signUpWithEmailAndPassword(email, password)
       )
     }
+    handleChangeLogin = (e, { name, value }) => this.setState({ [name]: value })
+    handleSubmitLogIn = e => {
+      const { email_login, password_login } = this.state
+      // this.props.dispatch(
+      //   setUserEmail(email_login)
+      // )
+      // setUserPassword(password_login)
+      this.props.dispatch(
+        logInWithEmailAndPassword(email_login, password_login)
+      )
+    }
     render() {
-        const { email, password, submittedEmail, submittedPassword } = this.state;
+        const { email, password, email_login, password_login } = this.state;
         return (
           <div className='login-form'>
             {/*
@@ -48,7 +59,7 @@ class LoginUI extends Component {
               verticalAlign='middle'
             >
               <Grid.Column style={{ maxWidth: 450 }}>
-                <Header as='h2' color='teal' textAlign='center'>
+                <Header as='h2' color='blue' textAlign='center'>
                   <Image src='/logo.png' />
                   {' '}Create Account
                 </Header>
@@ -61,7 +72,7 @@ class LoginUI extends Component {
                       iconPosition='left'
                       placeholder='E-mail address'
                       value={email}
-                      onChange={this.handleChange}
+                      onChange={this.handleChangeLogin}
                     />
                     <Form.Input
                       fluid
@@ -71,38 +82,41 @@ class LoginUI extends Component {
                       placeholder='Password'
                       type='password'
                       value={password}
-                      onChange={this.handleChange}
+                      onChange={this.handleChangeLogin}
                     />
-                    <Form.Button color='teal' fluid size='large' content='REGISTER'></Form.Button>
+                    <Form.Button color='blue' fluid size='large' content='REGISTER'></Form.Button>
                   </Segment>
                 </Form>
-                <Header as='h2' color='teal' textAlign='center'>
+                <Header as='h2' color='blue' textAlign='center'>
                   <Image src='/logo.png' />
                   {' '}Sign In
                 </Header>
-                <Form size='large' onSubmit={this.handleSubmit}>
+                <Button color='blue' style={{ padding: 10, width: '100%', marginBottom: 20}}  onClick={logInWithGoogle}>
+                  <Icon size='large' name='google'></Icon>
+                  Sign in with Google
+                </Button>
+                <Form size='large' onSubmit={this.handleSubmitLogIn}>
                   <Segment stacked>
-                    <Button style={{ padding: 10, width: '100%', marginBottom: 20}}> <Icon size='large' name='google' ></Icon>Sign in with Google </Button>
                     <Form.Input
                       fluid
                       icon='user'
-                      name='email'
+                      name='email_login'
                       iconPosition='left'
                       placeholder='E-mail address'
-                      value={email}
-                      onChange={this.handleChange}
+                      value={email_login}
+                      onChange={this.handleChangeLogin}
                     />
                     <Form.Input
                       fluid
                       icon='lock'
-                      name='password'
+                      name='password_login'
                       iconPosition='left'
                       placeholder='Password'
                       type='password'
-                      value={password}
-                      onChange={this.handleChange}
+                      value={password_login}
+                      onChange={this.handleChangeLogin}
                     />
-                    <Form.Button color='teal' fluid size='large' content='SIGN IN'></Form.Button>
+                    <Form.Button color='blue' fluid size='large' content='SIGN IN'></Form.Button>
                   </Segment>
                 </Form>
               </Grid.Column>
