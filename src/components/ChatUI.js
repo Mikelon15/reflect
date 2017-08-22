@@ -12,16 +12,14 @@ const mapStateToProps = (state) => ({
     user: state.user
 });
 
-class ChatUI extends Component {
-
-
-    render() {
-        return (
-          <div>
-          in the chatroom
-          </div>
-        )
-    }
-}
+const ChatUI = connect(
+  mapStateToProps
+)(({user}) => {
+  return (
+    <div>
+      in the chatroom with <h1>{user.email}</h1>
+    </div>
+  )
+})
 
 export default connect(mapStateToProps)(ChatUI);

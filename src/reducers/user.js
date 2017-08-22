@@ -20,7 +20,7 @@ const user = (state = initialState, action) => {
             });
       case 'SET_USER_EMAIL':
           return Object.assign({}, state, {
-              name: action.name
+              email: action.email
           });
       case 'SET_USER_PASSWORD':
           return Object.assign({}, state, {

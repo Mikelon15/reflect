@@ -136,30 +136,18 @@ export const signUpWithEmailAndPassword = (email, password) => {
     });
   }
 }
-export const logInWithGoogle = () => {
-  // Using a popup.
-  var provider = new firebase.auth.GoogleAuthProvider();
-
-  firebase.auth().signInWithPopup(provider).then(function(result) {
-    console.log(result);
-    if (result.credential) {
-      // This gives you a Google Access Token.
-      var token = result.credential.accessToken;
-    }
-    var user = result.user;
-  });
-}
 export const logInWithEmailAndPassword = (email, password) => {
   return function(dispatch, getState) {
     firebase.auth().signInWithEmailAndPassword(email, password).then(function(result) {
-      console.log(result);
+      console.log(result.email);
       if (result.credential) {
         // This gives you a Google Access Token.
         var token = result.credential.accessToken;
       }
       var user = result.user;
+      dispatch(setUserEmail(result.email))
+      dispatch(userAuthorized());
     });
-
   }
 }
 export const checkUserExists = () => {

@@ -21,6 +21,9 @@ const store = createStore(
     )
 );
 
+store.subscribe(()=>{
+  console.log("store changed", store.getState())
+})
 const LoginOrChat = connect(
     (state) => ({
         authorized: state.user.authorized
