@@ -39,7 +39,6 @@ export const receivedMessages = () => ({
 export const fetchMessages = () => {
     return function (dispatch) {
         dispatch(startFetchingMessages());
-
         firebase.database()
                 .ref('messages')
                 .orderByKey()
@@ -48,7 +47,6 @@ export const fetchMessages = () => {
                     // gets around Redux panicking about actions in reducers
                     setTimeout(() => {
                         const messages = snapshot.val() || [];
-
                         dispatch(receiveMessages(messages))
                     }, 0);
                 });
@@ -72,8 +70,31 @@ export const updateMessagesHeight = (event) => {
     }
 }
 
+export const createNewJournal = (name) => {
+  return function(dispatch, getState) {
+    const { uid } = getState().user;
+    firebase.database().ref('users/' + uid + '/journals').push({name: name });
+  }
+}
+export const loadUserJournalList = () => {
+  return function (dispatch, getState) {
+    const { uid } = getState().user;
 
-
+    console.log('fetching user journals');
+    dispatch(startFetchingMessages);
+    firebase.database()
+            .ref('users/'+uid+'/journals')
+            .orderByKey()
+            .on('value', (snapshot) => {
+              console.log(snapshot.val());
+              // gets around Redux panicking about actions in reducers
+              setTimeout(() => {
+                  const messages = snapshot.val() || [];
+                  dispatch(receiveMessages(messages))
+              }, 0);
+            });
+  }
+}
 //
 // User actions
 //
@@ -98,26 +119,10 @@ export const setUserPassword = (password) => ({
     password
 });
 
-export const login = () => {
-    return function (dispatch, getState) {
-        dispatch(startAuthorizing());
-
-        firebase.auth()
-                .signInAnonymously()
-                .then(() => {
-                    const { name, avatar } = getState().user;
-
-                    firebase.database()
-                            .ref(`users/midke`)
-                            .set({
-                                name,
-                                avatar
-                            });
-
-                    startChatting(dispatch);
-                });
-    }
-}
+export const setUserUID = (uid) => ({
+    type: 'SET_USER_UID',
+    uid
+});
 export const signUpWithEmailAndPassword = (email, password) => {
   return function(dispatch, getState) {
     console.log(email);
@@ -139,13 +144,18 @@ export const signUpWithEmailAndPassword = (email, password) => {
 export const logInWithEmailAndPassword = (email, password) => {
   return function(dispatch, getState) {
     firebase.auth().signInWithEmailAndPassword(email, password).then(function(result) {
-      console.log(result.email);
+      console.log(result);
       if (result.credential) {
         // This gives you a Google Access Token.
         var token = result.credential.accessToken;
       }
       var user = result.user;
-      dispatch(setUserEmail(result.email))
+
+      dispatch(setUserEmail(result.email));
+      dispatch(setUserName(result.displayName));
+      dispatch(setUserAvatar(result.photoURL));
+      dispatch(setUserUID(result.uid));
+      dispatch(loadUserJournalList());
       dispatch(userAuthorized());
     });
   }

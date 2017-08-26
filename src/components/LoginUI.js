@@ -5,7 +5,7 @@ import './loginUI.css';
 import { connect } from 'react-redux';
 import { Icon, Button, Form, Grid, Header, Image, Message, Segment } from 'semantic-ui-react'
 import FormInput from '../containers/Input';
-import { setUserEmail, setUserPassword, signUpWithEmailAndPassword, logInWithEmailAndPassword } from '../actions/index';
+import { setUserEmail, setUserPassword, logInWithEmailAndPassword } from '../actions/index';
 
 const mapStateToProps = (state) => ({
     authorizing: state.user.authorizing
@@ -35,14 +35,14 @@ class LoginUI extends Component {
               body > div > div,
               body > div > div > div.login-form {
                 height: 100%;
-
+                padding: 0%;
+                margin: 0%;
               }
             `}</style>
 
             <Grid
               textAlign='center'
               style={{ height: '100%' }}
-              verticalAlign='top'
             >
               <Grid.Column style={{ maxWidth: 450 }}>
                 <Header as='h1' textAlign='center' id="reflect">
@@ -54,7 +54,6 @@ class LoginUI extends Component {
                 <Form size='large' onSubmit={this.handleSubmitLogIn}>
                   <Segment stacked>
                     <Form.Input
-                      fluid
                       icon='user'
                       name='email_login'
                       iconPosition='left'
@@ -63,7 +62,6 @@ class LoginUI extends Component {
                       onChange={this.handleChangeLogin}
                     />
                     <Form.Input
-                      fluid
                       icon='lock'
                       name='password_login'
                       iconPosition='left'
